@@ -214,7 +214,7 @@
 
   window.__grinsSetLanguage = setLanguage;
 
-  const WEB3FORMS_ACCESS_KEY = 'YOUR_ACCESS_KEY_HERE';
+  const WEB3FORMS_ACCESS_KEY = 'a11521ba-504c-4648-87b0-88e245fc04cc';
   const PENDING_LEADS_KEY = 'grins_pending_leads';
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
