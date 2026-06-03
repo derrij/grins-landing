@@ -162,6 +162,61 @@
     }
   };
 
-  // Placeholder: language switcher will be added in Task 6.
   window.__grinsTranslations = translations;
+
+  const STORAGE_KEY = 'grins_lang';
+
+  function getSavedLang() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === 'ru' || saved === 'lv') return saved;
+    } catch (e) { /* localStorage may be blocked */ }
+    return 'ru';
+  }
+
+  function setLanguage(lang) {
+    const dict = translations[lang];
+    if (!dict) return;
+    document.documentElement.setAttribute('lang', dict['html.lang'] || lang);
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-i18n');
+      const value = dict[key];
+      if (value !== undefined) el.textContent = value;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+      const spec = el.getAttribute('data-i18n-attr');
+      const [attr, key] = spec.split('|');
+      const value = dict[key];
+      if (attr && value !== undefined) el.setAttribute(attr, value);
+    });
+    document.querySelectorAll('[data-i18n-option]').forEach((opt) => {
+      const key = opt.getAttribute('data-i18n-option');
+      const value = dict[key];
+      if (value !== undefined) opt.textContent = value;
+    });
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
+      const isActive = btn.getAttribute('data-lang') === lang;
+      btn.classList.toggle('lang-btn--active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* ignore */ }
+  }
+
+  function initLanguage() {
+    const lang = getSavedLang();
+    setLanguage(lang);
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setLanguage(btn.getAttribute('data-lang'));
+      });
+    });
+  }
+
+  window.__grinsSetLanguage = setLanguage;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguage);
+  } else {
+    initLanguage();
+  }
 })();
