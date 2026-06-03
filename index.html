@@ -94,7 +94,7 @@
         <h2 class="section-title" data-i18n="compare.title">Какой GrinS выбрать?</h2>
         <div class="compare__wrap">
           <table class="compare__table">
-            <thead><tr><th data-i18n="compare.featureCol">Параметр</th><th>GrinS 4</th><th>GrinS 5</th></tr></thead>
+            <thead><tr><th scope="col" data-i18n="compare.featureCol">Параметр</th><th scope="col">GrinS 4</th><th scope="col">GrinS 5</th></tr></thead>
             <tbody>
               <tr><td data-i18n="compare.price">Цена</td><td data-i18n="compare.grins4Price">от 110 EUR</td><td data-i18n="compare.grins5Price">от 120 EUR</td></tr>
               <tr><td data-i18n="compare.bestFor">Подходит для</td><td data-i18n="compare.grins4BestFor">Малый и средний бизнес</td><td data-i18n="compare.grins5BestFor">Любой размер, сложные процессы</td></tr>
@@ -107,7 +107,75 @@
         </div>
       </div>
     </section>
+
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2 class="section-title" data-i18n="form.title">Связаться с нами</h2>
+        <p class="contact__lead" data-i18n="form.lead">Оставьте заявку — мы свяжемся с вами и подберём оптимальное решение для вашего бизнеса.</p>
+        <form id="contact-form" class="contact-form" novalidate>
+          <div class="form-row">
+            <label class="form-field">
+              <span class="form-field__label" data-i18n="form.name">Имя</span>
+              <input type="text" name="name" required autocomplete="name" data-i18n-attr="placeholder|form.namePh" placeholder="Ваше имя">
+              <span class="form-field__error" data-error="name"></span>
+            </label>
+            <label class="form-field">
+              <span class="form-field__label" data-i18n="form.email">Email</span>
+              <input type="email" name="email" required autocomplete="email" data-i18n-attr="placeholder|form.emailPh" placeholder="you@example.com">
+              <span class="form-field__error" data-error="email"></span>
+            </label>
+          </div>
+          <label class="form-field">
+            <span class="form-field__label" data-i18n="form.product">Интересующий продукт</span>
+            <select name="product" required>
+              <option value="" data-i18n-option="form.productPlaceholder">— выберите —</option>
+              <option value="grins4">GrinS 4</option>
+              <option value="grins5">GrinS 5</option>
+              <option value="consult" data-i18n-option="form.productConsult">Нужна консультация</option>
+            </select>
+            <span class="form-field__error" data-error="product"></span>
+          </label>
+          <label class="form-field">
+            <span class="form-field__label" data-i18n="form.message">Сообщение</span>
+            <textarea name="message" rows="4" data-i18n-attr="placeholder|form.messagePh" placeholder="Расскажите о вашем бизнесе и задачах..."></textarea>
+          </label>
+          <button type="submit" class="btn btn--primary btn--lg contact-form__submit" data-i18n="form.submit">Отправить заявку</button>
+          <div class="contact-form__success" role="status" aria-live="polite" hidden>
+            <div class="success-icon">✓</div>
+            <p class="success-text" data-i18n="form.success">Заявка отправлена! Мы свяжемся с вами в ближайшее время.</p>
+          </div>
+          <div class="contact-form__error" role="alert" hidden>
+            <p data-i18n="form.error">Не удалось отправить. Попробуйте позже или свяжитесь с нами по телефону.</p>
+          </div>
+        </form>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__col">
+        <div class="logo logo--footer"><span class="logo__mark">GrinS</span></div>
+        <p class="footer__about" data-i18n="footer.about">Профессиональные программные решения для бизнеса. Разработчик — LatInSoft.</p>
+      </div>
+      <div class="footer__col">
+        <h4 class="footer__title" data-i18n="footer.contactsTitle">Контакты</h4>
+        <p data-i18n="footer.address">Mihoelsa iela 56, Daugavpils, LV-5401</p>
+        <p><a href="tel:+37165407217">+371 65407217</a></p>
+        <p><a href="tel:+37129712981">+371 29712981</a></p>
+        <p data-i18n="footer.supportLabel">Поддержка: <a href="tel:+37165407220">+371 65407220</a></p>
+      </div>
+      <div class="footer__col">
+        <h4 class="footer__title" data-i18n="footer.buyTitle">Покупка и демо</h4>
+        <p><a href="tel:+37165407217">+371 65407217</a></p>
+        <p><a href="tel:+37165422370">+371 65422370</a></p>
+        <p><a href="tel:+37129712981">+371 29712981</a></p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p data-i18n="footer.copyright">© 2026 LatInSoft. Все права защищены.</p>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>
