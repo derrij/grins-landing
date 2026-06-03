@@ -214,9 +214,159 @@
 
   window.__grinsSetLanguage = setLanguage;
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLanguage);
-  } else {
+  const WEB3FORMS_ACCESS_KEY = 'YOUR_ACCESS_KEY_HERE';
+  const PENDING_LEADS_KEY = 'grins_pending_leads';
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function t(key) {
+    const lang = (document.documentElement.getAttribute('lang') === 'lv') ? 'lv' : 'ru';
+    return translations[lang][key] || key;
+  }
+
+  function getField(name) {
+    const form = document.getElementById('contact-form');
+    return form ? form.elements[name] : null;
+  }
+
+  function validateField(name) {
+    const field = getField(name);
+    if (!field) return true;
+    const value = (field.value || '').trim();
+    const errEl = document.querySelector(`[data-error="${name}"]`);
+    let message = '';
+    if (!value) {
+      message = t('form.errRequired');
+    } else if (name === 'email' && !EMAIL_RE.test(value)) {
+      message = t('form.errEmail');
+    }
+    if (errEl) errEl.textContent = message;
+    field.classList.toggle('form-field__input--invalid', Boolean(message));
+    return !message;
+  }
+
+  function validateForm() {
+    return ['name', 'email', 'product'].every(validateField);
+  }
+
+  function savePendingLead(lead) {
+    try {
+      const raw = localStorage.getItem(PENDING_LEADS_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      arr.push(lead);
+      localStorage.setItem(PENDING_LEADS_KEY, JSON.stringify(arr));
+    } catch (e) { /* ignore quota / disabled */ }
+  }
+
+  async function flushPendingLeads() {
+    try {
+      const raw = localStorage.getItem(PENDING_LEADS_KEY);
+      if (!raw) return;
+      const arr = JSON.parse(raw);
+      const remaining = [];
+      for (const lead of arr) {
+        try {
+          const ok = await submitLead(lead, { silent: true });
+          if (!ok) remaining.push(lead);
+        } catch (e) {
+          remaining.push(lead);
+        }
+      }
+      if (remaining.length) {
+        localStorage.setItem(PENDING_LEADS_KEY, JSON.stringify(remaining));
+      } else {
+        localStorage.removeItem(PENDING_LEADS_KEY);
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  async function submitLead(data, opts) {
+    opts = opts || {};
+    const payload = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+      subject: 'Новая заявка GrinS',
+      from_name: 'GrinS Landing',
+      name: data.name,
+      email: data.email,
+      product: data.product,
+      message: data.message || ''
+    };
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json().catch(() => ({}));
+      return Boolean(json && json.success);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function showSuccess() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    form.querySelector('.contact-form__success').hidden = false;
+    form.querySelector('.contact-form__error').hidden = true;
+  }
+
+  function showError() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    form.querySelector('.contact-form__error').hidden = false;
+  }
+
+  function hideMessages() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    form.querySelector('.contact-form__success').hidden = true;
+    form.querySelector('.contact-form__error').hidden = true;
+  }
+
+  function initForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    ['name', 'email', 'product'].forEach((n) => {
+      const f = form.elements[n];
+      if (f) f.addEventListener('blur', () => validateField(n));
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validateForm()) return;
+      const submitBtn = form.querySelector('.contact-form__submit');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = t('form.submitting');
+      hideMessages();
+      const data = {
+        name: form.elements.name.value.trim(),
+        email: form.elements.email.value.trim(),
+        product: form.elements.product.value,
+        message: (form.elements.message.value || '').trim(),
+        timestamp: new Date().toISOString()
+      };
+      savePendingLead(data);
+      const ok = await submitLead(data);
+      if (ok) {
+        try { localStorage.removeItem(PENDING_LEADS_KEY); } catch (e) {}
+        form.reset();
+        showSuccess();
+      } else {
+        showError();
+      }
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    });
+    flushPendingLeads();
+  }
+
+  function initAll() {
     initLanguage();
+    initForm();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
   }
 })();
