@@ -339,3 +339,30 @@ button { font: inherit; cursor: pointer; }
   color: #9CA3AF;
   font-size: 14px;
 }
+
+/* Responsive */
+@media (max-width: 1023px) {
+  h1 { font-size: 40px; }
+  h2 { font-size: 32px; }
+  .features__grid { grid-template-columns: repeat(2, 1fr); }
+  .footer__inner { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 767px) {
+  :root { --section-py: 56px; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 26px; }
+  .header__inner { flex-wrap: wrap; height: auto; padding: 12px 0; gap: 12px; }
+  .nav { order: 3; flex-basis: 100%; margin-left: 0; justify-content: center; flex-wrap: wrap; gap: 12px; }
+  .header__cta { display: none; }
+  .hero { padding: 56px 0 40px; }
+  .hero__subtitle { font-size: 17px; }
+  .products__grid { grid-template-columns: 1fr; }
+  .features__grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .compare__table { font-size: 14px; }
+  .compare__table th, .compare__table td { padding: 12px; }
+  .footer__inner { grid-template-columns: 1fr; gap: 32px; }
+  .container { padding: 0 16px; }
+  .btn--lg { padding: 14px 24px; font-size: 16px; }
+}
