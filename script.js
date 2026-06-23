@@ -79,7 +79,9 @@
       'footer.address': 'Mihoelsa iela 56, Daugavpils, LV-5401',
       'footer.supportLabel': 'Поддержка: ',
       'footer.buyTitle': 'Покупка и демо',
-      'footer.copyright': '© 2026 LatInSoft. Все права защищены.'
+      'footer.copyright': '© 2026 LatInSoft. Все права защищены.',
+      'footer.visits': 'Посещений:',
+      'footer.visitors': 'Гостей:'
     },
     lv: {
       'html.lang': 'lv',
@@ -158,7 +160,9 @@
       'footer.address': 'Mihoelsa iela 56, Daugavpils, LV-5401',
       'footer.supportLabel': 'Atbalsts: ',
       'footer.buyTitle': 'Pirkšana un demonstrācija',
-      'footer.copyright': '© 2026 LatInSoft. Visas tiesības aizsargātas.'
+      'footer.copyright': '© 2026 LatInSoft. Visas tiesības aizsargātas.',
+      'footer.visits': 'Apmeklējumu:',
+      'footer.visitors': 'Viesu:'
     }
   };
 
@@ -386,10 +390,44 @@
     });
   }
 
+  const VISITS_KEY = 'grins_visits';
+  const VISITOR_KEY = 'grins_visitor_id';
+
+  function initStats() {
+    let visits = 0;
+    let isNewVisitor = false;
+    try {
+      visits = parseInt(localStorage.getItem(VISITS_KEY) || '0', 10);
+      isNewVisitor = !localStorage.getItem(VISITOR_KEY);
+      visits += 1;
+      localStorage.setItem(VISITS_KEY, String(visits));
+      if (isNewVisitor) {
+        localStorage.setItem(VISITOR_KEY, '1');
+      }
+    } catch (e) { /* ignore */ }
+
+    let visitors = 0;
+    try {
+      visitors = parseInt(localStorage.getItem('grins_visitors') || '0', 10);
+      if (isNewVisitor) {
+        visitors += 1;
+        localStorage.setItem('grins_visitors', String(visitors));
+      } else {
+        visitors = parseInt(localStorage.getItem('grins_visitors') || '1', 10);
+      }
+    } catch (e) { /* ignore */ }
+
+    const visitsEl = document.getElementById('stat-visits');
+    const visitorsEl = document.getElementById('stat-visitors');
+    if (visitsEl) visitsEl.textContent = visits;
+    if (visitorsEl) visitorsEl.textContent = visitors;
+  }
+
   function initAll() {
     initLanguage();
     initForm();
     initScroll();
+    initStats();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAll);

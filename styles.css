@@ -339,6 +339,12 @@ button { font: inherit; cursor: pointer; }
   color: #9CA3AF;
   font-size: 14px;
 }
+.footer__stats {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #6B7280;
+}
+.stats-sep { margin: 0 8px; opacity: 0.5; }
 
 /* Responsive */
 @media (max-width: 1023px) {
